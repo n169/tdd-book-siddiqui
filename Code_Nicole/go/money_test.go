@@ -40,7 +40,7 @@ func TestMultiplicationInEuros(t *testing.T){
 func TestDivision(t *testing.T){
     originalMoney := Money{amount: 4002, currency: "KRW"}
     actualResult := originalMoney.divide(4)
-    expectedResult = Money{amount: 1000.5, currency: "KRW"}
+    expectedResult := Money{amount: 1000.5, currency: "KRW"}
     assertEqual(t, expectedResult, actualResult)
 }
 
