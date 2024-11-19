@@ -14,6 +14,17 @@ Node.js v14 ("Fermium") or v16
 
 const assert = require('assert');
 
+class Money{
+    constructor(amount, currency){
+        this.amount = amount;
+        this.currency = currency;
+    }
+
+    times(multiplier){
+        return new Money(this.amount * multiplier, this.currency);
+    }
+}
+
 class Dollar{
 	constructor(amount){
 		this.amount = amount;
@@ -26,4 +37,9 @@ class Dollar{
 
 let fiver = new Dollar(5);
 let tenner = fiver.times(2);
-assert.strictEqual(tenner.amount, 10);
+assert.strictEqual(10, tenner.amount);
+
+let tenEuros = new Money(10, "EUR");
+let twentyEuros = tenEuros.times(2);
+assert.strictEqual(20, twentyEuros.amount);
+assert.strictEqual("EUR", twentyEuros.currency);
