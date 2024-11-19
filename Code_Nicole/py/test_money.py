@@ -25,7 +25,7 @@ class TestMoney(unittest.TestCase):
     def testMultiplication(self):
         fiver = Dollar(5)
         tenner = fiver.times(2)
-        self.assertEqual(10, tenner.amount)
+        self.assertEqual(10, tenner.amount)  # first the target, then the calculated value
 
 
 if __name__ == '__main__':
