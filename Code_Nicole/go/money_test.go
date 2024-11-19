@@ -7,7 +7,7 @@ Go version 1.17
 
 // done 5 USD x 2 = 10 USD
 // done 10 EUR x 2 = 20 EUR
-// todo 4002 KRW / 4 = 1000.5 KRW
+// done 4002 KRW / 4 = 1000.5 KRW
 // todo 5 USD + 10 EUR = 17 USE (if exchanging 1 EUR gets us 1.2 USD)
 // todo 1 USD + 1100 KRW = 2200 KRW (if exchanging 1 USD gets us 1100 KRW)
 // todo Remove redundant Money multiplication tests
@@ -19,33 +19,31 @@ import (
 	"testing"
 )
 
+func assertEqual(t *testing.T, expected Money, actual Money){
+    if expected != actual {
+        t.Errorf("Expected %+v, Got %+v", expected, actual)
+    }
+}
+
 func TestMultiplication(t *testing.T){
-	fiver := Money{amount: 5, "USD"}
-	tenner := fiver.Times(2)
-	if tenner.amount != 10 {
-		t.Errorf("Expected 10, got [%d]", tenner.amount)
-	}
+	fiveDollars := Money{amount: 5, "USD"}
+	tenDollars := Money{amount: 10, "USD"}
+	assertEqual(t, tenDollars, fiveDollars.times(2)
 }
 
 func TestMultiplicationInEuros(t *testing.T){
     tenEuros := Money{amount: 10, currency: "EUR"}
-    twentyEuros := tenEuros.times(2)
-    if twentyEuros.amount != 20 {
-        t.Errorf("Expected 20, got [%+v]", twentyEuros.amount)
-    }
-    if twentyEuros.currency != "EUR" {
-        t.Errorf("Expected EUR, got [%s]", twentyEuros.currency)
-    }
+    twentyEuros := Money{amount: 20, currency: "EUR"}
+    assertEqual(t, twentyEuros, tenEuros.times(2)
 }
 
 func TestDivision(t *testing.T){
     originalMoney := Money{amount: 4002, currency: "KRW"}
-    actualMoneyAfterDivisioin := originalMoney.divide(4)
-    expectedMoneyAfterDivision = Money{amount: 1000.5, currency: "KRW"}
-    if expectedMoneyAfterDivision != actualMoneyAfterDivisioin {
-        t.Errorf("Expected [%+v], got [%+v]", expectedMoneyAfterDivision, actualMoneyAfterDivisioin)
-    }
+    actualResult := originalMoney.divide(4)
+    expectedResult = Money{amount: 1000.5, currency: "KRW"}
+    assertEqual(t, expectedResult, actualResult)
 }
+
 
 type Money struct{
     amount float64
