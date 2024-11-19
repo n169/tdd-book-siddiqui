@@ -13,8 +13,8 @@ import operator  # for add function
 # done 5 USD x 2 = 10 USD
 # done 10 EUR x 2 = 20 EUR
 # done 4002 KRW / 4 = 1000.5 KRW
-# todo 5 USD + 10 USD = 15 USD (adding Money's)
-# todo 5 USD + 10 EUR = 17 USE (if exchanging 1 EUR gets us 1.2 USD)
+# done 5 USD + 10 USD = 15 USD (adding Money's in same currency)
+# todo 5 USD + 10 EUR = 17 USD (if exchanging 1 EUR gets us 1.2 USD)
 # todo 1 USD + 1100 KRW = 2200 KRW (if exchanging 1 USD gets us 1100 KRW)
 # todo Remove redundant Money multiplication tests
 
@@ -35,11 +35,21 @@ class Money:
 
 
 class Portfolio:
+    def __init__(self):
+        self.moneys = []
+
     def add(self, *moneys):
-        pass
+        self.moneys.extend(moneys)
 
     def evaluate(self, currency):
-        return Money(15, "USD")
+        # - using a lambda expression, we map the self.moneys array to a mpa of only the amounts in each Money object
+        # - we then reduce this map to a single scalar value, using the operator.add operation
+        # - we assign this scalar value to the variable named total
+        # - we finally create a new Money object using this total and the currency passed in
+        #   the first (and only) parameter to the evaluate method
+        # - the last parameter to reduce (0 in our case) is the initial value of the accumulated result
+        total = functools.reduce(operator.add, map(lambda m: m.amount, self.moneys), 0)
+        return Money(total, currency)
 
 
 class TestMoney(unittest.TestCase):
