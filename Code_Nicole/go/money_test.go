@@ -9,9 +9,10 @@ Go version 1.17
 // done 10 EUR x 2 = 20 EUR
 // done 4002 KRW / 4 = 1000.5 KRW
 // done 5 USD + 10 USD = 15 USD (adding Money's in same currency)
+// todo Separate test code from production code
+// todo Remove redundant tests
 // todo 5 USD + 10 EUR = 17 USD (if exchanging 1 EUR gets us 1.2 USD)
 // todo 1 USD + 1100 KRW = 2200 KRW (if exchanging 1 USD gets us 1100 KRW)
-// todo Remove redundant Money multiplication tests
 
 
 package main
