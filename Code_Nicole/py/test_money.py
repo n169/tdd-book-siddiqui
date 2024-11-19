@@ -1,5 +1,7 @@
 """
 Saleem Siddiqui: Learning Test-Driven Development, O'Reilly, 2023
+
+Python 3.12.3 in Conda basic installation
 """
 
 import unittest
