@@ -1,7 +1,8 @@
 """
-Saleem Siddiqui: Learning Test-Driven Development, O'Reilly, 2023
+Saleem Siddiqui: Learning Test-Driven Development, O'Reilly, 2021
 
-Python 3.12.3 in Conda basic installation
+Python version 3.10 recommended,
+but using Python 3.12.3 in Conda basic installation
 """
 
 import unittest
