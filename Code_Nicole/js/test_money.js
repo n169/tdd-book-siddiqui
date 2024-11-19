@@ -24,6 +24,10 @@ class Money{
     times(multiplier){
         return new Money(this.amount * multiplier, this.currency);
     }
+
+    divide(divisor){
+        return new Money(this.amount / divisor, this.currency);
+    }
 }
 
 let fiver = new Money(5, "USD");
@@ -34,3 +38,8 @@ let tenEuros = new Money(10, "EUR");
 let twentyEuros = tenEuros.times(2);
 assert.strictEqual(20, twentyEuros.amount);
 assert.strictEqual("EUR", twentyEuros.currency);
+
+let originalMoney = Money(4002, "KRW");
+let actualMoneyAfterDivision = originalMoney.divide(4);
+let expectedMoneyAfterDivision = Money(1000.5, "KRW");
+assert.deepStrictEqual(expectedMoneyAfterDivision, actualMoneyAfterDivision);

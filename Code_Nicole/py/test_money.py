@@ -24,6 +24,9 @@ class Money:
     def times(self, multiplier):
         return Money(self.amount * multiplier, self.currency)
 
+    def divide(self, divisor):
+        return Money(self.amount / divisor, self.currency)
+
 
 class TestMoney(unittest.TestCase):
     def testMultiplication(self):
@@ -36,6 +39,15 @@ class TestMoney(unittest.TestCase):
         twenty_euros = ten_euros.times(2)
         self.assertEqual(20, twenty_euros.amount)
         self.assertEqual("EUR", twenty_euros.currency)
+
+    def testDivision(self):
+        original_money = Money(4002, "KRW")
+        actual_money_after_division = original_money.divide(4)
+        expected_money_after_division = Money(1000.5, "KRW")
+        self.assertEqual(expected_money_after_division.amount,
+                         actual_money_after_division.amount)
+        self.assertEqual(expected_money_after_division.currency,
+                         actual_money_after_division.currency)
 
 
 if __name__ == '__main__':

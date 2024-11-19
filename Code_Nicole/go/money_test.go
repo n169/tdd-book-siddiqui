@@ -31,15 +31,24 @@ func TestMultiplicationInEuros(t *testing.T){
     tenEuros := Money{amount: 10, currency: "EUR"}
     twentyEuros := tenEuros.times(2)
     if twentyEuros.amount != 20 {
-        t.Errorf("Expected 20, got [%d]", twentyEuros.amount)
+        t.Errorf("Expected 20, got [%+v]", twentyEuros.amount)
     }
     if twentyEuros.currency != "EUR" {
         t.Errorf("Expected EUR, got [%s]", twentyEuros.currency)
     }
 }
 
+func TestDivision(t *testing.T){
+    originalMoney := Money{amount: 4002, currency: "KRW"}
+    actualMoneyAfterDivisioin := originalMoney.divide(4)
+    expectedMoneyAfterDivision = Money{amount: 1000.5, currency: "KRW"}
+    if expectedMoneyAfterDivision != actualMoneyAfterDivisioin {
+        t.Errorf("Expected [%+v], got [%+v]", expectedMoneyAfterDivision, actualMoneyAfterDivisioin)
+    }
+}
+
 type Money struct{
-    amount int
+    amount float64
     currency string
 }
 
@@ -48,5 +57,9 @@ type Dollar struct{
 }
 
 func (m Money) Times(multiplier int) Money{
-	return Money{amount: m.amount * multiplier, currency: m.currency}
+	return Money{amount: m.amount * float64(multiplier), currency: m.currency}
+}
+
+func (m Money) Divide(divisor int) Money{
+	return Money{amount: m.amount / float64(divisor), currency: m.currency}
 }
