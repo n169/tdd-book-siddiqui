@@ -24,17 +24,9 @@ class Money:
         return Money(self.amount * multiplier, self.currency)
 
 
-class Dollar:
-    def __init__(self, amount):
-        self.amount = amount
-
-    def times(self, multiplier):
-        return Dollar(self.amount * multiplier)
-
-
 class TestMoney(unittest.TestCase):
     def testMultiplication(self):
-        fiver = Dollar(5)
+        fiver = Money(5, "USD")
         tenner = fiver.times(2)
         self.assertEqual(10, tenner.amount)  # first the target, then the calculated value
 
