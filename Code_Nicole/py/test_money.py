@@ -6,8 +6,9 @@ but using Python 3.12.3 in Conda basic installation
 """
 
 import unittest
-import functools  # for reduce function
-import operator  # for add function
+
+from money import Money
+from portfolio import Portfolio
 
 
 # done 5 USD x 2 = 10 USD
@@ -18,39 +19,6 @@ import operator  # for add function
 # todo Remove redundant tests
 # todo 5 USD + 10 EUR = 17 USD (if exchanging 1 EUR gets us 1.2 USD)
 # todo 1 USD + 1100 KRW = 2200 KRW (if exchanging 1 USD gets us 1100 KRW)
-
-
-class Money:
-    def __init__(self, amount, currency):
-        self.amount = amount
-        self.currency = currency
-
-    def times(self, multiplier):
-        return Money(self.amount * multiplier, self.currency)
-
-    def divide(self, divisor):
-        return Money(self.amount / divisor, self.currency)
-
-    def __eq__(self, other):
-        return self.amount == other.amount and self.currency == other.currency
-
-
-class Portfolio:
-    def __init__(self):
-        self.moneys = []
-
-    def add(self, *moneys):
-        self.moneys.extend(moneys)
-
-    def evaluate(self, currency):
-        # - using a lambda expression, we map the self.moneys array to a mpa of only the amounts in each Money object
-        # - we then reduce this map to a single scalar value, using the operator.add operation
-        # - we assign this scalar value to the variable named total
-        # - we finally create a new Money object using this total and the currency passed in
-        #   the first (and only) parameter to the evaluate method
-        # - the last parameter to reduce (0 in our case) is the initial value of the accumulated result
-        total = functools.reduce(operator.add, map(lambda m: m.amount, self.moneys), 0)
-        return Money(total, currency)
 
 
 class TestMoney(unittest.TestCase):
