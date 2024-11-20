@@ -9,7 +9,7 @@ class Portfolio:
     def add(self, *moneys):
         self.moneys.extend(moneys)
 
-    def evaluate(self, currency):
+    def evaluate(self, bank, currency):
         # - using a lambda expression, we map the self.moneys array to a mpa of only the amounts in each Money object
         # - we then reduce this map to a single scalar value, using the operator.add operation
         # - we assign this scalar value to the variable named total
@@ -20,9 +20,9 @@ class Portfolio:
         failures = []
         for m in self.moneys:
             try:
-                total += self.__convert(m, currency)
-            except KeyError as ke:
-                failures.append(ke)
+                total += bank.convert(m, currency).amount
+            except Exception as ex:
+                failures.append(ex)
 
         if len(failures) == 0:
             return Money(total, currency)
@@ -30,14 +30,3 @@ class Portfolio:
         failure_message = ",".join(f.args[0] for f in failures)  # str(f) has single-quote characters
         raise Exception("Missing exchange rate(s):[" + failure_message + "]")
 
-    def __convert(self, a_money, a_currency):
-        exchange_rates = {
-            'EUR->USD': 1.2, 'USD->KRW': 1100.0
-        }
-        # other rates: 'USD->EUR': 1.0/1.2, 'KRW->USD': 1.0/1100.0, 'EUR->KRW': 1344.0, 'KRW->EUR': 1.0/1344.0
-
-        if a_money.currency == a_currency:
-            return a_money.amount
-        else:
-            key = a_money.currency + '->' + a_currency
-            return a_money.amount * exchange_rates[key]

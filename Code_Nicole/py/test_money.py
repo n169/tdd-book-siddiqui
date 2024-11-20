@@ -7,6 +7,7 @@ but using Python 3.12.3 in Conda basic installation
 
 import unittest
 
+from bank import Bank
 from money import Money
 from portfolio import Portfolio
 
@@ -21,11 +22,16 @@ from portfolio import Portfolio
 # done 1 USD + 1100 KRW = 2200 KRW (if exchanging 1 USD gets us 1100 KRW)
 # done Determine exchange rate based ont he currencies involved (from -> to)
 # done Improve error handling when exchange rates are unspecified
-# todo Improve the implementation of exchange rates
+# done Improve the implementation of exchange rates
 # todo Allow exchange rates to be modified
 
 
 class TestMoney(unittest.TestCase):
+
+    def setUp(self):
+        self.bank = Bank()
+        self.bank.addExchangeRate("EUR", "USD", 1.2)
+        self.bank.addExchangeRate("USD", "KRW", 1100)
 
     def testMultiplication(self):
         ten_euros = Money(10, "EUR")
@@ -44,7 +50,7 @@ class TestMoney(unittest.TestCase):
         fifteen_dollars = Money(15, "USD")
         portfolio = Portfolio()
         portfolio.add(five_dollars, ten_dollars)
-        self.assertEqual(fifteen_dollars, portfolio.evaluate("USD"))
+        self.assertEqual(fifteen_dollars, portfolio.evaluate(self.bank, "USD"))
 
     def testAdditionOfDollarsAndEuros(self):
         five_dollars = Money(5, "USD")
@@ -52,7 +58,7 @@ class TestMoney(unittest.TestCase):
         portfolio = Portfolio()
         portfolio.add(five_dollars, ten_euros)
         expected_value = Money(17, "USD")  # if we get 1.2 dollars for 1.0 euro
-        actual_value = portfolio.evaluate("USD")
+        actual_value = portfolio.evaluate(self.bank, "USD")
         self.assertEqual(expected_value, actual_value, "%s != %s" % (expected_value, actual_value))
 
     def testAdditionOfDollarsAndWons(self):
@@ -61,7 +67,7 @@ class TestMoney(unittest.TestCase):
         portfolio = Portfolio()
         portfolio.add(one_dollar, eleven_hundred_won)
         expected_value = Money(2200, "KRW")  # if we get 1100 wons for 1 dollar
-        actual_value = portfolio.evaluate("KRW")
+        actual_value = portfolio.evaluate(self.bank, "KRW")
         self.assertEqual(expected_value, actual_value, "%s != %s" % (expected_value, actual_value))
 
     def testAdditionWithMultipleMissingExchangeRates(self):
@@ -74,7 +80,19 @@ class TestMoney(unittest.TestCase):
                 Exception,
                 "Missing exchange rate\\(s\\):\\[USD\\->Kalganid,EUR->Kalganid,KRW->Kalganid\\]"
         ):
-            portfolio.evaluate("Kalganid")
+            portfolio.evaluate(self.bank, "Kalganid")
+
+    def testConversion(self):
+        bank = Bank()
+        bank.addExchangeRate("EUR", "USD", 1.2)
+        ten_euros = Money(10, "EUR")
+        self.assertEqual(Money(12, "USD"), bank.convert(ten_euros, "USD"))
+
+    def testConversionWithMissingExchangeRate(self):
+        bank = Bank()  # new bank with noe exchange rates
+        ten_euros = Money(10, "EUR")
+        with self.assertRaisesRegex(Exception, "EUR->Kalganid"):
+            bank.convert(ten_euros, "Kalganid")
 
 
 if __name__ == '__main__':
