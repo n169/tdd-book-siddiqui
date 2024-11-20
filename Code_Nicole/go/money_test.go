@@ -17,20 +17,35 @@ Go version 1.17
 // done 1 USD + 1100 KRW = 2200 KRW (if exchanging 1 USD gets us 1100 KRW)
 // done Determine exchange rate based ont he currencies involved (from -> to)
 // done Improve error handling when exchange rates are unspecified
-// todo Improve the implementation of exchange rates
+// done Improve the implementation of exchange rates
 // todo Allow exchange rates to be modified
 
 
 package main
 
 import (
-	"testing"
 	s "tdd/stocks" //give "tdd/stocks" packages the variable name "s"
+	"testing"
+	"reflect"
 )
 
+var bank s.Bank
+
+func init() { //setUp method for tests
+    bank = s.NewBank()
+    bank.AddExchangeRate("EUR", "USD", 1.2)
+    bank.AddExchangeRate("USD", "KRW", 1100)
+}
+
 func assertEqual(t *testing.T, expected interface{}, actual interface{}){
-    if expected != actual {
+    if expected != actual && !reflect.ValueOf(actual).IsNil() {
         t.Errorf("Expected %+v, Got %+v", expected, actual)
+    }
+}
+
+func assertNil(t *testing.T, actual interface{]}){
+    if actual != nil {
+        t.Errorf("Expected error to be nil, found: [%s]", actual)
     }
 }
 
@@ -57,9 +72,9 @@ func TestAddition(t *testing.T){
 
 	portfolio = s.Portfolio.add(fiveDollars)
 	portfolio = s.Portfolio.add(tenDollars)
-	portfolioInDollars, _ = portfolio.Evaluate("USD")
+	portfolioInDollars, _ = portfolio.Evaluate(bank, "USD")
 
-	assertEqual(t, fifteenDollars, portfolioInDollars)
+	assertEqual(t, fifteenDollars, *portfolioInDollars)
 }
 
 func TestAdditionOfDollarsAndEuros(t *testing.T){
@@ -72,9 +87,9 @@ func TestAdditionOfDollarsAndEuros(t *testing.T){
     portfolio = portfolio.Add(tenEuros)
 
     expectedValue := s.NewMoney(17, "USD") //if we get 1.2 dollars for 1.0 euro
-    actualValue, _ := portfolio.Evaluate("USD")
+    actualValue, _ := portfolio.Evaluate(bank, "USD")
 
-    assertEqual(t, expectedValue, actualValue)
+    assertEqual(t, expectedValue, *actualValue)
 }
 
 func TestAdditionOfDollarsAndWons(t *testing.T){
@@ -87,9 +102,9 @@ func TestAdditionOfDollarsAndWons(t *testing.T){
     portfolio = portfolio.Add(elevenHundredWons)
 
     expectedValue := s.NewMoney(2200, "KRW") //if we get 1100 wons for 1.0 dollar
-    actualValue, _ := portfolio.Evaluate("KRW")
+    actualValue, _ := portfolio.Evaluate(bank, "KRW")
 
-    assertEqual(t, expectedValue, actualValue)
+    assertEqual(t, expectedValue, *actualValue)
 }
 
 func TestAdditionWithMultipleMissingExchangeRates(t *testing.T){
@@ -106,7 +121,25 @@ func TestAdditionWithMultipleMissingExchangeRates(t *testing.T){
     expectedErrorMessage :=
         "Missing exchange rate(s):[USD->Kalganid,EUR->Kalganid,KRW->Kalganid]"
 
-    _, actualError := portfolio.Evaluate("Kalganid")
+    value, actualError := portfolio.Evaluate(bank, "Kalganid")
 
+    assertNil(t, value)
     assertEqual(t, expectedErrorMessage, actualError.Error())
+}
+
+func TestConversion(t *testing.T){
+    bank := s.Bank()
+    bank.AddExchangeRate("EUR", "USD", 1.2)
+    tenEuros := s.NewMoney(10, "EUR")
+    actualConvertedMoney, err := bank.Convert(tenEuros, "USD")
+    assertNil(t, err)
+    assertEqual(t, s.NewMoney(12, "USD"), *actualConvertedMoney)
+}
+
+func TestConversionWithMissingExchangeRate(t *testing.T){
+    bank := s.NewBank()
+    tenEuros := s.NewMoney(10, "EUR")
+    actualConvertedMoney, err := bank.Convert(tenEuros, "Kalganid")
+    assertEqual(t, actualConvertedMoney)
+    assertEqual(t, "EUR->Kalganid", err.Error())
 }
