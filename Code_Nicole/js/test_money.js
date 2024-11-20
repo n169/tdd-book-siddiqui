@@ -42,6 +42,16 @@ class MoneyTest{
         assert.strictEqual(fifteenDollars, portfolio.evaluate("USD"));
     }
 
+    testAdditionOfDollarsInEuros(){
+        let fiveDollars = new Money(5, "USD");
+        let tenEuros = new Money(10, "EUR");
+        let portfolio = new Portfolio();
+        portfolio.add(fiveDollars, tenEuros);
+        let expectedValue = new Money(17, "USD") //if we get 1.2 dollars for 1.0 euro
+        assert.strictEqual(expectedValue, portfolio.evaluate("USD"));
+
+    }
+
     getAllTestMethods(){
         //let testMethods := ['testMultiplication', 'testDivision', 'testAddition'];
 
