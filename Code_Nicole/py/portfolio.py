@@ -1,6 +1,3 @@
-import functools
-import operator
-
 from money import Money
 
 
@@ -19,10 +16,19 @@ class Portfolio:
         # - we finally create a new Money object using this total and the currency passed in
         #   the first (and only) parameter to the evaluate method
         # - the last parameter to reduce (0 in our case) is the initial value of the accumulated result
-        total = functools.reduce(
-            operator.add, map(lambda m: self.__convert(m, currency), self.moneys), 0
-        )
-        return Money(total, currency)
+        total = 0.0
+        failures = []
+        for m in self.moneys:
+            try:
+                total += self.__convert(m, currency)
+            except KeyError as ke:
+                failures.append(ke)
+
+        if len(failures) == 0:
+            return Money(total, currency)
+
+        failure_message = ",".join(f.args[0] for f in failures)  # str(f) has single-quote characters
+        raise Exception("Missing exchange rate(s):[" + failure_message + "]")
 
     def __convert(self, a_money, a_currency):
         exchange_rates = {

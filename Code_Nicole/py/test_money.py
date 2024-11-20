@@ -20,7 +20,8 @@ from portfolio import Portfolio
 # done 5 USD + 10 EUR = 17 USD (if exchanging 1 EUR gets us 1.2 USD)
 # done 1 USD + 1100 KRW = 2200 KRW (if exchanging 1 USD gets us 1100 KRW)
 # done Determine exchange rate based ont he currencies involved (from -> to)
-# todo Improve error handling when exchange rates are unspecified
+# done Improve error handling when exchange rates are unspecified
+# todo Improve the implementation of exchange rates
 # todo Allow exchange rates to be modified
 
 
@@ -62,6 +63,18 @@ class TestMoney(unittest.TestCase):
         expected_value = Money(2200, "KRW")  # if we get 1100 wons for 1 dollar
         actual_value = portfolio.evaluate("KRW")
         self.assertEqual(expected_value, actual_value, "%s != %s" % (expected_value, actual_value))
+
+    def testAdditionWithMultipleMissingExchangeRates(self):
+        one_dollar = Money(1, "USD")
+        one_euro = Money(1, "EUR")
+        one_won = Money(1, "KRW")
+        portfolio = Portfolio()
+        portfolio.add(one_dollar, one_euro, one_won)
+        with self.assertRaisesRegex(
+                Exception,
+                "Missing exchange rate\(s\):\[USD\->Kalganid,EUR->Kalganid,KRW->Kalganid]"
+        ):
+            portfolio.evaluate("Kalganid")
 
 
 if __name__ == '__main__':
