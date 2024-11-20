@@ -13,8 +13,10 @@ Go version 1.17
 // done Make amount and currency accessible only from within Money struct and not from outside
 // done Create a public New function to initialize the Money struct
 // done Remove redundant tests
-// todo 5 USD + 10 EUR = 17 USD (if exchanging 1 EUR gets us 1.2 USD)
+// done 5 USD + 10 EUR = 17 USD (if exchanging 1 EUR gets us 1.2 USD)
 // todo 1 USD + 1100 KRW = 2200 KRW (if exchanging 1 USD gets us 1100 KRW)
+// todo Determine exchange rate based ont he currencies involved (from -> to)
+// todo Allow exchange rates to be modified
 
 
 package main

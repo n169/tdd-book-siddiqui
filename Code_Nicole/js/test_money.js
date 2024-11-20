@@ -10,9 +10,11 @@ Node.js v14 ("Fermium") or v16
 // done 4002 KRW / 4 = 1000.5 KRW
 // done 5 USD + 10 USD = 15 USD (adding Money's in same currency)
 // done Separate test code from production code
-// todo Remove redundant tests
-// todo 5 USD + 10 EUR = 17 USD (if exchanging 1 EUR gets us 1.2 USD)
+// done Remove redundant tests
+// done 5 USD + 10 EUR = 17 USD (if exchanging 1 EUR gets us 1.2 USD)
 // todo 1 USD + 1100 KRW = 2200 KRW (if exchanging 1 USD gets us 1100 KRW)
+// todo Determine exchange rate based ont he currencies involved (from -> to)
+// todo Allow exchange rates to be modified
 
 
 const assert = require('assert');
