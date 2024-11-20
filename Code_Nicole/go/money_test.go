@@ -16,7 +16,8 @@ Go version 1.17
 // done 5 USD + 10 EUR = 17 USD (if exchanging 1 EUR gets us 1.2 USD)
 // done 1 USD + 1100 KRW = 2200 KRW (if exchanging 1 USD gets us 1100 KRW)
 // done Determine exchange rate based ont he currencies involved (from -> to)
-// todo Improve error handling when exchange rates are unspecified
+// done Improve error handling when exchange rates are unspecified
+// todo Improve the implementation of exchange rates
 // todo Allow exchange rates to be modified
 
 
@@ -27,7 +28,7 @@ import (
 	s "tdd/stocks" //give "tdd/stocks" packages the variable name "s"
 )
 
-func assertEqual(t *testing.T, expected s.Money, actual s.Money){
+func assertEqual(t *testing.T, expected interface{}, actual interface{}){
     if expected != actual {
         t.Errorf("Expected %+v, Got %+v", expected, actual)
     }
@@ -56,7 +57,7 @@ func TestAddition(t *testing.T){
 
 	portfolio = s.Portfolio.add(fiveDollars)
 	portfolio = s.Portfolio.add(tenDollars)
-	portfolioInDollars = portfolio.Evaluate("USD")
+	portfolioInDollars, _ = portfolio.Evaluate("USD")
 
 	assertEqual(t, fifteenDollars, portfolioInDollars)
 }
@@ -71,7 +72,7 @@ func TestAdditionOfDollarsAndEuros(t *testing.T){
     portfolio = portfolio.Add(tenEuros)
 
     expectedValue := s.NewMoney(17, "USD") //if we get 1.2 dollars for 1.0 euro
-    actualValue := portfolio.Evaluate("USD")
+    actualValue, _ := portfolio.Evaluate("USD")
 
     assertEqual(t, expectedValue, actualValue)
 }
@@ -86,11 +87,26 @@ func TestAdditionOfDollarsAndWons(t *testing.T){
     portfolio = portfolio.Add(elevenHundredWons)
 
     expectedValue := s.NewMoney(2200, "KRW") //if we get 1100 wons for 1.0 dollar
-    actualValue := portfolio.Evaluate("KRW")
+    actualValue, _ := portfolio.Evaluate("KRW")
 
     assertEqual(t, expectedValue, actualValue)
 }
 
+func TestAdditionWithMultipleMissingExchangeRates(t *testing.T){
+    var portfolio s.Portfolio
 
+    oneDollar := s.NewMoney(1, "USD")
+    oneEuro := s.NewMoney(1, "EUR")
+    oneWon := s.NewMoney(1, "KRW")
 
+    portfolio = portfolio.Add(oneDollar)
+    portfolio = portfolio.Add(oneEuro)
+    portfolio = portfolio.Add(oneWon)
 
+    expectedErrorMessage :=
+        "Missing exchange rate(s):[USD->Kalganid,EUR->Kalganid,KRW->Kalganid]"
+
+    _, actualError := portfolio.Evaluate("Kalganid")
+
+    assertEqual(t, expectedErrorMessage, actualError.Error())
+}
