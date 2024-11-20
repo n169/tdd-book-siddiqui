@@ -13,7 +13,8 @@ Node.js v14 ("Fermium") or v16
 // done Remove redundant tests
 // done 5 USD + 10 EUR = 17 USD (if exchanging 1 EUR gets us 1.2 USD)
 // todo 1 USD + 1100 KRW = 2200 KRW (if exchanging 1 USD gets us 1100 KRW)
-// todo Determine exchange rate based ont he currencies involved (from -> to)
+// done Determine exchange rate based ont he currencies involved (from -> to)
+// todo Improve error handling when exchange rates are unspecified
 // todo Allow exchange rates to be modified
 
 
@@ -44,15 +45,24 @@ class MoneyTest{
         assert.strictEqual(fifteenDollars, portfolio.evaluate("USD"));
     }
 
-    testAdditionOfDollarsInEuros(){
+    testAdditionOfDollarsAndEuros(){
         let fiveDollars = new Money(5, "USD");
         let tenEuros = new Money(10, "EUR");
         let portfolio = new Portfolio();
         portfolio.add(fiveDollars, tenEuros);
         let expectedValue = new Money(17, "USD") //if we get 1.2 dollars for 1.0 euro
         assert.strictEqual(expectedValue, portfolio.evaluate("USD"));
-
     }
+
+    testAdditionOfDollarsAndWons(){
+        let oneDollar = new Money(1, "USD");
+        let elevenHundredWons = new Money(1100, "KRW");
+        let portfolio = new Portfolio();
+        portfolio.add(oneDollar, elevenHundredWons);
+        let expectedValue = new Money(2200, "KRWD") //if we get 1100 wons for 1 dollar
+        assert.strictEqual(expectedValue, portfolio.evaluate("KRW"));
+    }
+
 
     getAllTestMethods(){
         //let testMethods := ['testMultiplication', 'testDivision', 'testAddition'];

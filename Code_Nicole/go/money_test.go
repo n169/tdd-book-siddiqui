@@ -14,8 +14,9 @@ Go version 1.17
 // done Create a public New function to initialize the Money struct
 // done Remove redundant tests
 // done 5 USD + 10 EUR = 17 USD (if exchanging 1 EUR gets us 1.2 USD)
-// todo 1 USD + 1100 KRW = 2200 KRW (if exchanging 1 USD gets us 1100 KRW)
-// todo Determine exchange rate based ont he currencies involved (from -> to)
+// done 1 USD + 1100 KRW = 2200 KRW (if exchanging 1 USD gets us 1100 KRW)
+// done Determine exchange rate based ont he currencies involved (from -> to)
+// todo Improve error handling when exchange rates are unspecified
 // todo Allow exchange rates to be modified
 
 
@@ -60,7 +61,7 @@ func TestAddition(t *testing.T){
 	assertEqual(t, fifteenDollars, portfolioInDollars)
 }
 
-func TestAdditionOfDollarsInEuros(t *testing.T){
+func TestAdditionOfDollarsAndEuros(t *testing.T){
     var portfolio s.Portfolio
 
     fiveDollars := s.NewMoney(5, "USD")
@@ -73,7 +74,21 @@ func TestAdditionOfDollarsInEuros(t *testing.T){
     actualValue := portfolio.Evaluate("USD")
 
     assertEqual(t, expectedValue, actualValue)
+}
 
+func TestAdditionOfDollarsAndWons(t *testing.T){
+    var portfolio s.Portfolio
+
+    fiveDollars := s.NewMoney(5, "USD")
+    elevenHundredWons := s.NewMoney(1100, "KRW")
+
+    portfolio = portfolio.Add(fiveDollars)
+    portfolio = portfolio.Add(elevenHundredWons)
+
+    expectedValue := s.NewMoney(2200, "KRW") //if we get 1100 wons for 1.0 dollar
+    actualValue := portfolio.Evaluate("KRW")
+
+    assertEqual(t, expectedValue, actualValue)
 }
 
 
