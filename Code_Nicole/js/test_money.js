@@ -14,7 +14,8 @@ Node.js v14 ("Fermium") or v16
 // done 5 USD + 10 EUR = 17 USD (if exchanging 1 EUR gets us 1.2 USD)
 // todo 1 USD + 1100 KRW = 2200 KRW (if exchanging 1 USD gets us 1100 KRW)
 // done Determine exchange rate based ont he currencies involved (from -> to)
-// todo Improve error handling when exchange rates are unspecified
+// done Improve error handling when exchange rates are unspecified
+// todo Improve the implementation of exchange rates
 // todo Allow exchange rates to be modified
 
 
@@ -61,6 +62,16 @@ class MoneyTest{
         portfolio.add(oneDollar, elevenHundredWons);
         let expectedValue = new Money(2200, "KRWD") //if we get 1100 wons for 1 dollar
         assert.strictEqual(expectedValue, portfolio.evaluate("KRW"));
+    }
+
+    testAdditionWithMultipleMissingExchangeRates(){
+        let oneDollar = new Money(1, "USD");
+        let oneEuro = new Money(1, "EUR");
+        let oneWon = new Money(1, "KRW");
+        let portfolio = new Portfolio();
+        portfolio.add(oneDollar, oneEuro, oneWon);
+        let expectedError = new Error("Missing exchange rate(s):[USD->Kalganid,EUR->Kalganid,KRW->Kalganid]");
+        assert.throws(function() {portfolio.evaluate("Kalganid"), expectedError});
     }
 
 
