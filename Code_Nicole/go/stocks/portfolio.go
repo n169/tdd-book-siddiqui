@@ -17,8 +17,8 @@ func (p Portfolio) Evaluate(currency string) Money {
 
 func convert(money Money, currency string) float64 {
     exchangeRates := map[string]float64{
-        // "EUR->USD": 1.2,
-        // "USD->KRW": 1100.0,
+        "EUR->USD": 1.2,
+        "USD->KRW": 1100.0,
     }
     // other rates: "USD->EUR": 1.0/1.2, "KRW->USD": 1.0/1100.0, "EUR->KRW": 1344.0, "KRW->EUR": 1.0/1344.0
     if money.currency == currency{

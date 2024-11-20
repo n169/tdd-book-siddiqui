@@ -19,8 +19,8 @@ class Portfolio{
 
     convert(money, currency){
         let exchangeRates = new Map();
-        // exchangeRates.set("EUR->USD", 1.2);
-        // exchangeRates.set("USD->KRW", 1100.0);
+        exchangeRates.set("EUR->USD", 1.2);
+        exchangeRates.set("USD->KRW", 1100.0);
         // exchangeRates.set("USD->EUR", 1.0/1.2);
         // exchangeRates.set("KRW->USD", 1.0/1100.0);
         // exchangeRates.set("EUR->KRW", 1344.0);
