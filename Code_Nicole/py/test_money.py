@@ -15,19 +15,15 @@ from portfolio import Portfolio
 # done 10 EUR x 2 = 20 EUR
 # done 4002 KRW / 4 = 1000.5 KRW
 # done 5 USD + 10 USD = 15 USD (adding Money's in same currency)
-# todo Separate test code from production code
-# todo Remove redundant tests
+# done Separate test code from production code
+# done Remove redundant tests
 # todo 5 USD + 10 EUR = 17 USD (if exchanging 1 EUR gets us 1.2 USD)
 # todo 1 USD + 1100 KRW = 2200 KRW (if exchanging 1 USD gets us 1100 KRW)
 
 
 class TestMoney(unittest.TestCase):
-    def testMultiplicationInDollars(self):
-        five_dollars = Money(5, "USD")
-        ten_dollars = Money(10, "USD")
-        self.assertEqual(ten_dollars, five_dollars.times(2))  # first the target, then the calculated value
 
-    def testMultiplicationInEuros(self):
+    def testMultiplication(self):
         ten_euros = Money(10, "EUR")
         twenty_euros = Money(20, "EUR")
         self.assertEqual(twenty_euros, ten_euros.times(2))
