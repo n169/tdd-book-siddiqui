@@ -17,8 +17,10 @@ from portfolio import Portfolio
 # done 5 USD + 10 USD = 15 USD (adding Money's in same currency)
 # done Separate test code from production code
 # done Remove redundant tests
-# todo 5 USD + 10 EUR = 17 USD (if exchanging 1 EUR gets us 1.2 USD)
+# done 5 USD + 10 EUR = 17 USD (if exchanging 1 EUR gets us 1.2 USD)
 # todo 1 USD + 1100 KRW = 2200 KRW (if exchanging 1 USD gets us 1100 KRW)
+# todo Determine exchange rate based ont he currencies involved (from -> to)
+# todo Allow exchange rates to be modified
 
 
 class TestMoney(unittest.TestCase):
@@ -41,6 +43,15 @@ class TestMoney(unittest.TestCase):
         portfolio = Portfolio()
         portfolio.add(five_dollars, ten_dollars)
         self.assertEqual(fifteen_dollars, portfolio.evaluate("USD"))
+
+    def testAdditionOfDollarsAndEuros(self):
+        five_dollars = Money(5, "USD")
+        ten_euros = Money(10, "EUR")
+        portfolio = Portfolio()
+        portfolio.add(five_dollars, ten_euros)
+        expected_value = Money(17, "USD")  # if we get 1.2 dollars for 1.0 euro
+        actual_value = portfolio.evaluate("USD")
+        self.assertEqual(expected_value, actual_value, "%s != %s" % (expected_value, actual_value))
 
 
 if __name__ == '__main__':

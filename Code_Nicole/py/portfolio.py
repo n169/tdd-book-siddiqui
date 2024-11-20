@@ -7,6 +7,7 @@ from money import Money
 class Portfolio:
     def __init__(self):
         self.moneys = []
+        self._eur_to_usd = 1.2
 
     def add(self, *moneys):
         self.moneys.extend(moneys)
@@ -18,5 +19,13 @@ class Portfolio:
         # - we finally create a new Money object using this total and the currency passed in
         #   the first (and only) parameter to the evaluate method
         # - the last parameter to reduce (0 in our case) is the initial value of the accumulated result
-        total = functools.reduce(operator.add, map(lambda m: m.amount, self.moneys), 0)
+        total = functools.reduce(
+            operator.add, map(lambda m: self.__convert(m, currency), self.moneys), 0
+        )
         return Money(total, currency)
+
+    def __convert(self, a_money, a_currency):
+        if a_money.currency == a_currency:
+            return a_money.amount
+        else:
+            return a_money.amount * self._eur_to_usd
