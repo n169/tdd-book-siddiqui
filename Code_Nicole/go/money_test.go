@@ -2,6 +2,9 @@
 Saleem Siddiqui: Learning Test-Driven Development, O'Reilly, 2021
 
 Go version 1.17
+
+Run tests in random order:
+go test -v -shuffle on ./...
 */
 
 
@@ -18,7 +21,7 @@ Go version 1.17
 // done Determine exchange rate based ont he currencies involved (from -> to)
 // done Improve error handling when exchange rates are unspecified
 // done Improve the implementation of exchange rates
-// todo Allow exchange rates to be modified
+// done Allow exchange rates to be modified
 
 
 package main
@@ -31,7 +34,7 @@ import (
 
 var bank s.Bank
 
-func init() { //setUp method for tests
+func initExchangeRates() { //setUp method for tests
     bank = s.NewBank()
     bank.AddExchangeRate("EUR", "USD", 1.2)
     bank.AddExchangeRate("USD", "KRW", 1100)
@@ -63,6 +66,8 @@ func TestDivision(t *testing.T){
 }
 
 func TestAddition(t *testing.T){
+    initExchangeRates()
+
     var portfolio s.Portfolio
     var portfolioInDollars s.Money
 
@@ -78,6 +83,8 @@ func TestAddition(t *testing.T){
 }
 
 func TestAdditionOfDollarsAndEuros(t *testing.T){
+    initExchangeRates()
+
     var portfolio s.Portfolio
 
     fiveDollars := s.NewMoney(5, "USD")
@@ -93,6 +100,8 @@ func TestAdditionOfDollarsAndEuros(t *testing.T){
 }
 
 func TestAdditionOfDollarsAndWons(t *testing.T){
+    initExchangeRates()
+
     var portfolio s.Portfolio
 
     fiveDollars := s.NewMoney(5, "USD")
@@ -108,6 +117,8 @@ func TestAdditionOfDollarsAndWons(t *testing.T){
 }
 
 func TestAdditionWithMultipleMissingExchangeRates(t *testing.T){
+    initExchangeRates()
+
     var portfolio s.Portfolio
 
     oneDollar := s.NewMoney(1, "USD")
@@ -127,9 +138,26 @@ func TestAdditionWithMultipleMissingExchangeRates(t *testing.T){
     assertEqual(t, expectedErrorMessage, actualError.Error())
 }
 
-func TestConversion(t *testing.T){
-    bank := s.Bank()
-    bank.AddExchangeRate("EUR", "USD", 1.2)
+func TestConversionWithDifferentRatesBetweenTwoCurrencies(t *testing.T){
+    initExchangeRates()
+
+    tenEuros := s.NewMoney(10, "EUR")
+    actualConvertedMoney, err := bank.Convert(tenEuros, "USD")
+    assertNil(t, err)
+    assertEqual(t, s.NewMoney(12, "USD"), *actualConvertedMoney)
+
+    bank.AddExchangeRate("EUR", "USD", 1.3)
+    actualConvertedMoney, err := bank.Convert(tenEuros, "USD")
+    assertNil(t, err)
+    assertEqual(t, s.NewMoney(13, "USD"), *actualConvertedMoney)
+}
+
+func TestWhatIsTheConversionRateFromEURToUSDBySetUp(t *testing.T){
+    // Ensure, that there a no side effects from one test to another,
+    // because the setUp method is run before each test.
+
+    initExchangeRates()
+
     tenEuros := s.NewMoney(10, "EUR")
     actualConvertedMoney, err := bank.Convert(tenEuros, "USD")
     assertNil(t, err)
@@ -137,7 +165,8 @@ func TestConversion(t *testing.T){
 }
 
 func TestConversionWithMissingExchangeRate(t *testing.T){
-    bank := s.NewBank()
+    initExchangeRates()
+
     tenEuros := s.NewMoney(10, "EUR")
     actualConvertedMoney, err := bank.Convert(tenEuros, "Kalganid")
     assertEqual(t, actualConvertedMoney)

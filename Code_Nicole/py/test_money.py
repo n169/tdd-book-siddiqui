@@ -23,7 +23,7 @@ from portfolio import Portfolio
 # done Determine exchange rate based ont he currencies involved (from -> to)
 # done Improve error handling when exchange rates are unspecified
 # done Improve the implementation of exchange rates
-# todo Allow exchange rates to be modified
+# done Allow exchange rates to be modified
 
 
 class TestMoney(unittest.TestCase):
@@ -82,17 +82,23 @@ class TestMoney(unittest.TestCase):
         ):
             portfolio.evaluate(self.bank, "Kalganid")
 
-    def testConversion(self):
-        bank = Bank()
-        bank.addExchangeRate("EUR", "USD", 1.2)
+    def testConversionWithDifferentRatesBetweenTwoCurrencies(self):
         ten_euros = Money(10, "EUR")
-        self.assertEqual(Money(12, "USD"), bank.convert(ten_euros, "USD"))
+        self.assertEqual(Money(12, "USD"), self.bank.convert(ten_euros, "USD"))
+
+        self.bank.addExchangeRate("EUR", "USD", 1.3)
+        self.assertEqual(Money(13, "USD"), self.bank.convert(ten_euros, "USD"))
+
+    def testWhatIsTheConversionRateFromEURToUSDBySetUp(self):
+        # Ensure, that there a no side effects from one test to another,
+        # because the setUp method is run before each test.
+        ten_euros = Money(10, "EUR")
+        self.assertEqual(Money(12, "USD"), self.bank.convert(ten_euros, "USD"))
 
     def testConversionWithMissingExchangeRate(self):
-        bank = Bank()  # new bank with noe exchange rates
         ten_euros = Money(10, "EUR")
         with self.assertRaisesRegex(Exception, "EUR->Kalganid"):
-            bank.convert(ten_euros, "Kalganid")
+            self.bank.convert(ten_euros, "Kalganid")
 
 
 if __name__ == '__main__':

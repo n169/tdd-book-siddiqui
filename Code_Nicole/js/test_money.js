@@ -16,7 +16,7 @@ Node.js v14 ("Fermium") or v16
 // done Determine exchange rate based ont he currencies involved (from -> to)
 // done Improve error handling when exchange rates are unspecified
 // done Improve the implementation of exchange rates
-// todo Allow exchange rates to be modified
+// done Allow exchange rates to be modified
 
 
 const assert = require('assert');
@@ -25,7 +25,7 @@ const Money = require('./money');
 const Portfolio = require('./portfolio');
 
 class MoneyTest{
-    constructor(){ //setUp
+    setUp(){ //setUp
         this.bank = new Bank();
         this.bank.addExchangeRate("EUR", "USD", 1.2);
         this.bank.addExchangeRate("USD", "KRW", 1100);
@@ -47,6 +47,7 @@ class MoneyTest{
             console.log("Running: %s()", m); //Print the name of the method before invoking it
             let method = Reflect.get(this, m); //Get the method object for each test method name via reflection
             try {
+                this.setUp();
                 Reflect.apply(method, this, []); //Invoke the test method with no arguments on this object
             } catch (e) {
                 if (e instanceof assert.AssertionError) {
@@ -108,18 +109,25 @@ class MoneyTest{
         assert.throws(() => portfolio.evaluate(this.bank, "Kalganid"), expectedError);
     }
 
-    testConversion(){
-        let bank = new Bank();
-        bank.addExchangeRate("EUR", "USD", 1.2);
+    testConversionConversionWithDifferentRatesBetweenTwoCurrencies(){
         let tenEuros = new Money(10, "EUR");
-        assert.deepStrictEqual(new Money(12, "USD"), bank.convert(tenEuros, "USD"));
+        assert.deepStrictEqual(new Money(12, "USD"), this.bank.convert(tenEuros, "USD"));
+
+        this.bank.addExchangeRate("EUR", "USD", 1.3);
+        assert.deepStrictEqual(new Money(13, "USD"), this.bank.convert(tenEuros, "USD"));
+    }
+
+    testWhatIsTheConversionRateFromEURToUSDBySetUp(){
+        // Ensure, that there a no side effects from one test to another,
+        // because the setUp method is run before each test.
+        let tenEuros = new Money(10, "EUR");
+        assert.deepStrictEqual(new Money(12, "USD"), this.bank.convert(tenEuros, "USD"));
     }
 
     testConversionWithMissingExchangeRate(){
-        let bank = new Bank();
         let tenEuros = new Money(10, "EUR");
         let expectedError = new Error("EUR->Kalganid");
-        assert.throws(function() { bank.convert(tenEuros, "Kalganid")}, expectedError);
+        assert.throws(function() { this.bank.convert(tenEuros, "Kalganid")}, expectedError);
     }
 
 }
