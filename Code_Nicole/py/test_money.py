@@ -20,7 +20,7 @@ from portfolio import Portfolio
 # done Remove redundant tests
 # done 5 USD + 10 EUR = 17 USD (if exchanging 1 EUR gets us 1.2 USD)
 # done 1 USD + 1100 KRW = 2200 KRW (if exchanging 1 USD gets us 1100 KRW)
-# done Determine exchange rate based ont he currencies involved (from -> to)
+# done Determine exchange rate based on the currencies involved (from -> to)
 # done Improve error handling when exchange rates are unspecified
 # done Improve the implementation of exchange rates
 # done Allow exchange rates to be modified
