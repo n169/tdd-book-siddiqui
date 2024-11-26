@@ -67,7 +67,7 @@ class MoneyTest{
     let elevenHundredWons = new Money(1100, "KRW");
     let portfolio = new Portfolio();
     portfolio.add(oneDollar, elevenHundredWons);
-    let expectedValue = new Money(2200, "KRWD") //if we get 1100 wons for 1 dollar
+    let expectedValue = new Money(2200, "KRW") //if we get 1100 wons for 1 dollar
     assert.deepStrictEqual(expectedValue, portfolio.evaluate(this.bank, "KRW"));
   }
 
@@ -78,7 +78,7 @@ class MoneyTest{
     let portfolio = new Portfolio();
     portfolio.add(oneDollar, oneEuro, oneWon);
     let expectedError = new Error("Missing exchange rate(s):[USD->Kalganid,EUR->Kalganid,KRW->Kalganid]");
-    assert.throws(() => portfolio.evaluate(this.bank, "Kalganid"), expectedError);
+    assert.throws( () => portfolio.evaluate(this.bank, "Kalganid"), expectedError);
   }
 
   testConversionConversionWithDifferentRatesBetweenTwoCurrencies(){
@@ -99,7 +99,7 @@ class MoneyTest{
   testConversionWithMissingExchangeRate(){
     let tenEuros = new Money(10, "EUR");
     let expectedError = new Error("EUR->Kalganid");
-    assert.throws(function() { this.bank.convert(tenEuros, "Kalganid")}, expectedError);
+    assert.throws( () => this.bank.convert(tenEuros, "Kalganid"), expectedError);
   }
   
   testAdditionWithTestDouble() {
@@ -130,10 +130,8 @@ class MoneyTest{
   testAddTwoMoneysInDifferentCurrencies() {
     let euro = new Money(1, "EUR");
     let dollar = new Money(1, "USD");
-    assert.throws(function () { euro.add(dollar); },
-      new Error("Cannot add USD to EUR"));
-    assert.throws(function () { dollar.add(euro); },
-      new Error("Cannot add EUR to USD"));
+    assert.throws( () => euro.add(dollar), new Error("Cannot add USD to EUR"));
+    assert.throws( () => dollar.add(euro), new Error("Cannot add EUR to USD"));
   }
 	
   getAllTestMethods(){
