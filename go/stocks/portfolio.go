@@ -10,7 +10,7 @@ func (p Portfolio) Add(money Money) Portfolio {
 }
 
 func (p Portfolio) Evaluate(bank Bank, currency string) (*Money, error) {
-	total := 0.0
+	totalMoney := NewMoney(0, currency)
 	failedConversions := make([]string, 0)
 	for _, m := range p {
 		if convertedMoney, err := bank.Convert(m, currency); err == nil {
