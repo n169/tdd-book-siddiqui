@@ -15,17 +15,16 @@ class Portfolio:
         # - we finally create a new Money object using this total and the currency passed in
         #   the first (and only) parameter to the evaluate method
         # - the last parameter to reduce (0 in our case) is the initial value of the accumulated result
-        total = 0.0
-        failures = []
+        total = Money(0, currency)
+        failures = ""
         for m in self.moneys:
-            try:
-                total += bank.convert(m, currency).amount
-            except Exception as ex:
-                failures.append(ex)
+            c, k = bank.convert(m, currency)
+            if k is None:
+                total += c
+            else:
+                failures += k if not failures else "," + k
 
-        if len(failures) == 0:
-            return Money(total, currency)
+        if not failures:  # because empty strings evaluate to false, this is equivalent to: len(failures) == 0
+            return total
 
-        failure_message = ",".join(f.args[0] for f in failures)  # str(f) has single-quote characters
-        raise Exception("Missing exchange rate(s):[" + failure_message + "]")
-
+        raise Exception("Missing exchange rate(s):[" + failures + "]")

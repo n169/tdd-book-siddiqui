@@ -84,21 +84,33 @@ class TestMoney(unittest.TestCase):
 
     def testConversionWithDifferentRatesBetweenTwoCurrencies(self):
         ten_euros = Money(10, "EUR")
-        self.assertEqual(Money(12, "USD"), self.bank.convert(ten_euros, "USD"))
+        result, missing_key = self.bank.convert(ten_euros, "USD")
+        self.assertEqual(Money(12, "USD"), result)
+        self.assertIsNone(missing_key)
 
         self.bank.addExchangeRate("EUR", "USD", 1.3)
-        self.assertEqual(Money(13, "USD"), self.bank.convert(ten_euros, "USD"))
+        result, missing_key = self.bank.convert(ten_euros, "USD")
+        self.assertEqual(Money(13, "USD"), result)
+        self.assertIsNone(missing_key)
 
     def testWhatIsTheConversionRateFromEURToUSDBySetUp(self):
         # Ensure, that there a no side effects from one test to another,
         # because the setUp method is run before each test.
         ten_euros = Money(10, "EUR")
-        self.assertEqual(Money(12, "USD"), self.bank.convert(ten_euros, "USD"))
+        result, missing_key = self.bank.convert(ten_euros, "USD")
+        self.assertEqual(Money(12, "USD"), result)
 
     def testConversionWithMissingExchangeRate(self):
         ten_euros = Money(10, "EUR")
-        with self.assertRaisesRegex(Exception, "EUR->Kalganid"):
-            self.bank.convert(ten_euros, "Kalganid")
+        result, missing_key = self.bank.convert(ten_euros, "Kalganid")
+        self.assertIsNone(result)
+        self.assertEqual(missing_key, "EUR->Kalganid")
+
+    def testAddMoneysDirectly(self):
+        self.assertEqual(Money(15, "USD"), Money(5, "USD") + Money(10, "USD"))
+        self.assertEqual(Money(15, "USD"), Money(10, "USD") + Money(5, "USD"))
+        self.assertEqual(None, Money(5, "USD") + Money(10, "EUR"))
+        self.assertEqual(None, Money(5, "USD") + None)
 
 
 if __name__ == '__main__':

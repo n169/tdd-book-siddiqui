@@ -1,31 +1,31 @@
-const Money = require('./money');
+const Money = require("./money");
 
 class Portfolio{
-    constructor(){
-        this.moneys = [];
-    }
+  constructor(){
+    this.moneys = [];
+  }
 
-    add(...moneys){
-        //the rest parameter syntax "..." allows multiple Money's to be added simultaneously
-        this.moneys = this.moneys.concat(moneys);
-    }
+  add(...moneys){
+    //the rest parameter syntax "..." allows multiple Money's to be added simultaneously
+    this.moneys = this.moneys.concat(moneys);
+  }
 
-    evaluate(bank, currency){
-        let failures = [];
-        let total = this.moneys.reduce( (sum, money) => {
-                        try {
-                            let convertedMoney = bank.convert(money, currency);
-                            return sum.add(convertedMoney);
-                        }
-                        catch (error){
-                            failures.push(error.message);
-                            return sum;
-                        }
+  evaluate(bank, currency){
+    let failures = [];
+    let total = this.moneys.reduce( (sum, money) => {
+            try {
+              let convertedMoney = bank.convert(money, currency);
+              return sum.add(convertedMoney);
+            }
+            catch (error){
+              failures.push(error.message);
+              return sum;
+            }
 		} , new Money(0, currency));
-        if (!failures.length){
-            return total;
-        }
-        throw new Error("Missing exchange rate(s):[" + failures.join() + "]");
+    if (!failures.length){
+      return total;
+    }
+    throw new Error("Missing exchange rate(s):[" + failures.join() + "]");
 	}
 }
 
