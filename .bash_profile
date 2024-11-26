@@ -1,1 +1,1 @@
-export TDD_PROJECT_ROOT = C:/_Data/Code/TDD-Book-Siddiqui
+export TDD_PROJECT_ROOT = C:/_Data/Code/TDD-Book-Siddiqui_Github
