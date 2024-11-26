@@ -11,13 +11,13 @@ class Bank{
     }
 
     convert(money, currency){
-        if (money.currency == currency){
+        if (money.currency === currency){
             return new Money(money.amount, money.currency);
         }
-        let key = money.currency + "->" currency;
+        let key = money.currency + "->" + currency;
         let rate = this.exchangeRates.get(key);
-        if (rate == undefined){
-            throw new Error(key)
+        if (rate === undefined){
+            throw new Error(key);
         }
         return new Money(money.amount*rate, currency);
     }

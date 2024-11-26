@@ -7,25 +7,26 @@ class Portfolio{
 
     add(...moneys){
         //the rest parameter syntax "..." allows multiple Money's to be added simultaneously
-        this.moneys = this.moneys.concat(moneys)
+        this.moneys = this.moneys.concat(moneys);
     }
 
-    evaluate(bank currency){
+    evaluate(bank, currency){
         let failures = [];
         let total = this.moneys.reduce( (sum, money) => {
                         try {
                             let convertedMoney = bank.convert(money, currency);
-                            return sum + convertedMoney.amount;
+                            return sum.add(convertedMoney);
                         }
                         catch (error){
                             failures.push(error.message);
                             return sum;
                         }
+		} , new Money(0, currency));
         if (!failures.length){
-            return new Money(total, currency);
+            return total;
         }
         throw new Error("Missing exchange rate(s):[" + failures.join() + "]");
-    }
+	}
 }
 
 module.exports = Portfolio;

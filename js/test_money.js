@@ -20,7 +20,7 @@ Node.js v14 ("Fermium") or v16
 
 
 const assert = require('assert');
-cont Bank = require('./bank');
+const Bank = require('./bank');
 const Money = require('./money');
 const Portfolio = require('./portfolio');
 
@@ -42,7 +42,7 @@ class MoneyTest{
     }
 
     runAllTests(){
-        let testMethods := this.getAllTestMethods();
+        let testMethods = this.getAllTestMethods();
         testMethods.forEach(m => {
             console.log("Running: %s()", m); //Print the name of the method before invoking it
             let method = Reflect.get(this, m); //Get the method object for each test method name via reflection

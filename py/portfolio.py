@@ -4,7 +4,6 @@ from money import Money
 class Portfolio:
     def __init__(self):
         self.moneys = []
-        self._eur_to_usd = 1.2
 
     def add(self, *moneys):
         self.moneys.extend(moneys)
